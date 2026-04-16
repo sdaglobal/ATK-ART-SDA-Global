@@ -858,12 +858,22 @@
     }
 
     window.onload = function () {
-      document.getElementById('stok-atk-section').classList.add('hidden');
-      document.getElementById('database-barang-section').classList.add('hidden');
-      document.getElementById('master-barang-section').classList.add('hidden');
-      document.getElementById('master-karyawan-section').classList.add('hidden');
-      document.getElementById('histori-masuk-section').classList.add('hidden');
-      document.getElementById('histori-keluar-section').classList.add('hidden');
+      const semuaSection = [
+        'stok-atk-section',
+        'database-barang-section',
+        'master-barang-section',
+        'master-karyawan-section',
+        'histori-masuk-section',
+        'histori-keluar-section'
+      ];
+
+      semuaSection.forEach(id => {
+        const element = document.getElementById(id);
+        if (element) {
+          element.classList.add('hidden');
+        }
+      });
+
       tampilkanBarang();
       tampilkanKaryawan();
       updateSelectBarang();
