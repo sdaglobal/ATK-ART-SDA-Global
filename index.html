@@ -144,13 +144,20 @@
           <div class="space-y-4">
             <input type="date" id="tanggalKeluar" class="w-full border rounded-xl p-3">
 
+            <div class="mb-4 grid md:grid-cols-2 gap-4">
+              <input list="masterKaryawanList" type="text" id="namaPengambilGlobal" placeholder="Cari Nama Pengambil / Karyawan" class="w-full border rounded-xl p-3" oninput="isiDepartemenOtomatis()">
+              <input type="text" id="departemenGlobal" placeholder="Departemen" class="w-full border rounded-xl p-3 bg-slate-100" readonly>
+            </div>
+
+            <datalist id="masterKaryawanList"></datalist>
+
             <div id="listPengeluaranBarang" class="space-y-4">
               <div class="grid md:grid-cols-4 gap-4 border rounded-2xl p-4 bg-slate-50 pengeluaran-item">
                 <input list="masterBarangList" type="text" class="namaBarangKeluar w-full border rounded-xl p-3" placeholder="Cari atau pilih barang">
                 <input type="number" class="jumlahBarangKeluar w-full border rounded-xl p-3" placeholder="Jumlah Keluar">
-                <input type="text" class="departemenKeluar w-full border rounded-xl p-3" placeholder="Departemen">
+                <input type="text" class="departemenKeluar w-full border rounded-xl p-3 bg-slate-100" placeholder="Departemen" readonly>
                 <div class="flex gap-2">
-                  <input type="text" class="pengambilKeluar w-full border rounded-xl p-3" placeholder="Nama Pengambil">
+                  <input type="text" class="pengambilKeluar w-full border rounded-xl p-3 bg-slate-100" placeholder="Nama Pengambil" readonly>
                   <button type="button" onclick="hapusBarisPengeluaran(this)" class="bg-red-600 text-white px-4 rounded-xl hover:bg-red-700">
                     Hapus
                   </button>
@@ -336,6 +343,12 @@
       `;
 
       container.appendChild(wrapper);
+
+      const namaPengambil = document.getElementById('namaPengambilGlobal').value;
+      const departemen = document.getElementById('departemenGlobal').value;
+
+      wrapper.querySelector('.pengambilKeluar').value = namaPengambil;
+      wrapper.querySelector('.departemenKeluar').value = departemen;
     }
 
     function updateSelectBarang() {
@@ -425,6 +438,36 @@
       alert('Pemasukan stok berhasil disimpan');
     }
 
+    function updateDatalistKaryawan() {
+      const datalist = document.getElementById('masterKaryawanList');
+      if (!datalist) return;
+
+      datalist.innerHTML = '';
+
+      karyawanList.forEach(karyawan => {
+        datalist.innerHTML += `<option value="${karyawan.nama}">${karyawan.nama}</option>`;
+      });
+    }
+
+    function isiDepartemenOtomatis() {
+      const nama = document.getElementById('namaPengambilGlobal').value.trim().toLowerCase();
+      const departemenInput = document.getElementById('departemenGlobal');
+
+      const karyawan = karyawanList.find(item =>
+        item.nama.trim().toLowerCase() === nama
+      );
+
+      departemenInput.value = karyawan ? karyawan.departemen : '';
+
+      document.querySelectorAll('.pengambilKeluar').forEach(input => {
+        input.value = document.getElementById('namaPengambilGlobal').value;
+      });
+
+      document.querySelectorAll('.departemenKeluar').forEach(input => {
+        input.value = departemenInput.value;
+      });
+    }
+
     function tambahBarisPengeluaran() {
       const container = document.getElementById('listPengeluaranBarang');
 
@@ -433,9 +476,9 @@
       wrapper.innerHTML = `
         <input list="masterBarangList" type="text" class="namaBarangKeluar w-full border rounded-xl p-3" placeholder="Cari atau pilih barang">
         <input type="number" class="jumlahBarangKeluar w-full border rounded-xl p-3" placeholder="Jumlah Keluar">
-        <input type="text" class="departemenKeluar w-full border rounded-xl p-3" placeholder="Departemen">
+        <input type="text" class="departemenKeluar w-full border rounded-xl p-3 bg-slate-100" placeholder="Departemen" readonly>
         <div class="flex gap-2">
-          <input type="text" class="pengambilKeluar w-full border rounded-xl p-3" placeholder="Nama Pengambil">
+          <input type="text" class="pengambilKeluar w-full border rounded-xl p-3 bg-slate-100" placeholder="Nama Pengambil" readonly>
           <button type="button" onclick="hapusBarisPengeluaran(this)" class="bg-red-600 text-white px-4 rounded-xl hover:bg-red-700">
             Hapus
           </button>
@@ -507,9 +550,9 @@
         <div class="grid md:grid-cols-4 gap-4 border rounded-2xl p-4 bg-slate-50 pengeluaran-item">
           <input list="masterBarangList" type="text" class="namaBarangKeluar w-full border rounded-xl p-3" placeholder="Cari atau pilih barang">
           <input type="number" class="jumlahBarangKeluar w-full border rounded-xl p-3" placeholder="Jumlah Keluar">
-          <input type="text" class="departemenKeluar w-full border rounded-xl p-3" placeholder="Departemen">
-          <div class="flex gap-2">
-            <input type="text" class="pengambilKeluar w-full border rounded-xl p-3" placeholder="Nama Pengambil">
+          <input type="text" class="departemenKeluar w-full border rounded-xl p-3 bg-slate-100" placeholder="Departemen" readonly>
+        <div class="flex gap-2">
+          <input type="text" class="pengambilKeluar w-full border rounded-xl p-3 bg-slate-100" placeholder="Nama Pengambil" readonly>
             <button type="button" onclick="hapusBarisPengeluaran(this)" class="bg-red-600 text-white px-4 rounded-xl hover:bg-red-700">
               Hapus
             </button>
@@ -608,6 +651,7 @@
       tampilkanBarang();
       tampilkanKaryawan();
       updateSelectBarang();
+      updateDatalistKaryawan();
     }
   </script>
 </body>
