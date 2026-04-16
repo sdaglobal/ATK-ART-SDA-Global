@@ -361,9 +361,16 @@
           continue;
         }
 
-        const barang = barangList.find(item =>
-          item.nama.trim().toLowerCase() === namaBarang.trim().toLowerCase()
-        );
+        const barang = barangList.find(item => {
+          const namaMaster = item.nama.trim().toLowerCase();
+          const namaInput = namaBarang.trim().toLowerCase();
+
+          return (
+            namaMaster === namaInput ||
+            namaInput.includes(namaMaster) ||
+            namaMaster.includes(namaInput)
+          );
+        });
 
         if (!barang) {
           continue;
