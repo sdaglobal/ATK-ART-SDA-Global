@@ -51,12 +51,12 @@
     <div class="max-w-7xl mx-auto px-6 py-4">
       <div class="bg-white rounded-3xl shadow-lg p-4">
         <div class="flex flex-wrap gap-3 justify-center">
-          <a href="#stok-atk-section" class="bg-blue-700 text-white px-5 py-3 rounded-xl hover:bg-blue-800 cursor-pointer inline-block">Stok ATK</a>
-          <a href="#database-barang-section" class="bg-slate-700 text-white px-5 py-3 rounded-xl hover:bg-slate-800 cursor-pointer inline-block">Database Barang</a>
-          <a href="#master-barang-section" class="bg-purple-700 text-white px-5 py-3 rounded-xl hover:bg-purple-800 cursor-pointer inline-block">Master Barang</a>
-          <a href="#master-karyawan-section" class="bg-orange-600 text-white px-5 py-3 rounded-xl hover:bg-orange-700 cursor-pointer inline-block">Master Karyawan</a>
-          <a href="#histori-masuk-section" class="bg-green-600 text-white px-5 py-3 rounded-xl hover:bg-green-700 cursor-pointer inline-block">Histori Masuk</a>
-          <a href="#histori-keluar-section" class="bg-red-600 text-white px-5 py-3 rounded-xl hover:bg-red-700 cursor-pointer inline-block">Histori Keluar</a>
+          <a href="#" onclick="showOnlySection('stok-atk-section')" class="bg-blue-700 text-white px-5 py-3 rounded-xl hover:bg-blue-800 cursor-pointer inline-block">Stok ATK</a>
+          <a href="#" onclick="showOnlySection('database-barang-section')" class="bg-slate-700 text-white px-5 py-3 rounded-xl hover:bg-slate-800 cursor-pointer inline-block">Database Barang</a>
+          <a href="#" onclick="showOnlySection('master-barang-section')" class="bg-purple-700 text-white px-5 py-3 rounded-xl hover:bg-purple-800 cursor-pointer inline-block">Master Barang</a>
+          <a href="#" onclick="showOnlySection('master-karyawan-section')" class="bg-orange-600 text-white px-5 py-3 rounded-xl hover:bg-orange-700 cursor-pointer inline-block">Master Karyawan</a>
+          <a href="#" onclick="showOnlySection('histori-masuk-section')" class="bg-green-600 text-white px-5 py-3 rounded-xl hover:bg-green-700 cursor-pointer inline-block">Histori Masuk</a>
+          <a href="#" onclick="showOnlySection('histori-keluar-section')" class="bg-red-600 text-white px-5 py-3 rounded-xl hover:bg-red-700 cursor-pointer inline-block">Histori Keluar</a>
           
         </div>
       </div>
@@ -609,6 +609,13 @@
 
       tampilkanHistoriKeluar();
 
+      document.getElementById('stok-atk-section').style.display = 'none';
+      document.getElementById('database-barang-section').style.display = 'none';
+      document.getElementById('master-barang-section').style.display = 'none';
+      document.getElementById('master-karyawan-section').style.display = 'none';
+      document.getElementById('histori-masuk-section').style.display = 'none';
+      document.getElementById('histori-keluar-section').style.display = 'none';
+
       document.getElementById('menu-stok-atk').onclick = function() { tampilSection('stok-atk-section'); };
       document.getElementById('menu-database-barang').onclick = function() { tampilSection('database-barang-section'); };
       document.getElementById('menu-master-barang').onclick = function() { tampilSection('master-barang-section'); };
@@ -837,6 +844,32 @@
       if (persentaseEl) {
         persentaseEl.textContent = persentase + '% dari total pengambilan';
       }
+    }
+
+    function showOnlySection(sectionId) {
+      const sections = [
+        'stok-atk-section',
+        'database-barang-section',
+        'master-barang-section',
+        'master-karyawan-section',
+        'histori-masuk-section',
+        'histori-keluar-section'
+      ];
+
+      sections.forEach(id => {
+        const section = document.getElementById(id);
+        if (section) {
+          section.style.display = 'none';
+        }
+      });
+
+      const activeSection = document.getElementById(sectionId);
+      if (activeSection) {
+        activeSection.style.display = 'block';
+        activeSection.scrollIntoView({ behavior: 'smooth' });
+      }
+
+      return false;
     }
 
     document.addEventListener('DOMContentLoaded', function () {
