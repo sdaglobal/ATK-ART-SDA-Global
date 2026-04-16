@@ -32,8 +32,9 @@
     </div>
 
     <div class="bg-white rounded-3xl shadow-lg p-6">
-      <p class="text-sm text-slate-500 mb-2">Departemen Terbanyak</p>
-      <h3 class="text-3xl font-bold text-red-600">HRD</h3>
+      <p class="text-sm text-slate-500 mb-2">Departemen Pengambilan Terbanyak</p>
+      <h3 id="departemenTerbanyak" class="text-3xl font-bold text-red-600">-</h3>
+      <p id="persentaseDepartemen" class="text-sm text-slate-500 mt-2">0%</p>
     </div>
 
     <div class="bg-white rounded-3xl shadow-lg p-6">
@@ -603,6 +604,8 @@
       document.getElementById('tanggalKeluar').value = '';
 
       tampilkanHistoriKeluar();
+      updateDashboardDepartemen();
+      updateDashboardDepartemen();
       alert('Pengeluaran stok berhasil disimpan');
     }
 
@@ -791,6 +794,40 @@
       }
     }
 
+    function updateDashboardDepartemen() {
+      const totalKeluar = historiKeluar.reduce((total, item) => total + Number(item.jumlahKeluar || 0), 0);
+
+      const departemenData = {};
+
+      historiKeluar.forEach(item => {
+        const dept = item.departemen || 'Lainnya';
+        departemenData[dept] = (departemenData[dept] || 0) + Number(item.jumlahKeluar || 0);
+      });
+
+      let departemenTerbanyak = '-';
+      let jumlahTerbanyak = 0;
+
+      Object.keys(departemenData).forEach(dept => {
+        if (departemenData[dept] > jumlahTerbanyak) {
+          departemenTerbanyak = dept;
+          jumlahTerbanyak = departemenData[dept];
+        }
+      });
+
+      const persentase = totalKeluar > 0 ? ((jumlahTerbanyak / totalKeluar) * 100).toFixed(1) : 0;
+
+      const departemenEl = document.getElementById('departemenTerbanyak');
+      const persentaseEl = document.getElementById('persentaseDepartemen');
+
+      if (departemenEl) {
+        departemenEl.textContent = departemenTerbanyak;
+      }
+
+      if (persentaseEl) {
+        persentaseEl.textContent = persentase + '% dari total pengambilan';
+      }
+    }
+
     window.onload = function () {
       document.getElementById('stok-atk-section').classList.add('hidden');
       document.getElementById('database-barang-section').classList.add('hidden');
@@ -804,6 +841,7 @@
       updateDatalistKaryawan();
       tampilkanHistoriMasuk();
       tampilkanHistoriKeluar();
+      updateDashboardDepartemen();
     }
   </script>
   <section class="max-w-7xl mx-auto px-6 pb-10">
