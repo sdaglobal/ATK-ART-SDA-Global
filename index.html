@@ -792,8 +792,12 @@
     }
 
     window.onload = function () {
-      document.getElementById('stok-atk-section').classList.remove('hidden');
-      document.getElementById('database-barang-section').classList.remove('hidden');
+      document.getElementById('stok-atk-section').classList.add('hidden');
+      document.getElementById('database-barang-section').classList.add('hidden');
+      document.getElementById('master-barang-section').classList.add('hidden');
+      document.getElementById('master-karyawan-section').classList.add('hidden');
+      document.getElementById('histori-masuk-section').classList.add('hidden');
+      document.getElementById('histori-keluar-section').classList.add('hidden');
       tampilkanBarang();
       tampilkanKaryawan();
       updateSelectBarang();
