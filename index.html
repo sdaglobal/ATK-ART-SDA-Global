@@ -308,8 +308,11 @@
         <div>
           <input list="masterBarangList" type="text" class="namaBarangMasuk w-full border rounded-xl p-3" placeholder="Cari atau pilih barang">
         </div>
-        <div>
+        <div class="flex gap-2">
           <input type="number" class="jumlahBarangMasuk w-full border rounded-xl p-3" placeholder="Jumlah Masuk">
+          <button type="button" onclick="hapusBarisPemasukan(this)" class="bg-red-600 text-white px-4 rounded-xl hover:bg-red-700">
+            Hapus
+          </button>
         </div>
       `;
 
@@ -330,6 +333,18 @@
       barangList.forEach(barang => {
         datalist.innerHTML += `<option value="${barang.nama}">${barang.nama} (${barang.satuan})</option>`;
       });
+    }
+
+    function hapusBarisPemasukan(button) {
+      const item = button.closest('.pemasukan-item');
+      const totalItem = document.querySelectorAll('.pemasukan-item').length;
+
+      if (totalItem <= 1) {
+        alert('Minimal harus ada satu baris pemasukan');
+        return;
+      }
+
+      item.remove();
     }
 
     function simpanPemasukan() {
