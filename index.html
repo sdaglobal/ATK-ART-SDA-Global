@@ -314,7 +314,6 @@
       `;
 
       container.appendChild(wrapper);
-      updateSelectBarang();
     }
 
     function updateSelectBarang() {
@@ -340,10 +339,10 @@
       let berhasil = false;
 
       namaBarangInputs.forEach((input, index) => {
-        const namaBarang = input.value;
+        const namaBarang = input.value.trim();
         const jumlahMasuk = parseInt(jumlahBarangInputs[index].value);
 
-        if (!namaBarang || !jumlahMasuk) return;
+        if (!namaBarang || isNaN(jumlahMasuk) || jumlahMasuk <= 0) return;
 
         const barang = barangList.find(item => item.nama.toLowerCase() === namaBarang.toLowerCase());
 
@@ -373,6 +372,7 @@
         </div>
       `;
 
+      updateSelectBarang();
       document.getElementById('tanggalMasuk').value = '';
 
       alert('Pemasukan stok berhasil disimpan');
