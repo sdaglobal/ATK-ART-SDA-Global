@@ -116,11 +116,10 @@
             <input type="date" id="tanggalMasuk" class="w-full border rounded-xl p-3">
 
             <div id="listPemasukanBarang" class="space-y-4">
+              <datalist id="masterBarangList"></datalist>
               <div class="grid md:grid-cols-2 gap-4 border rounded-2xl p-4 bg-slate-50 pemasukan-item">
                 <div>
-                  <select class="namaBarangMasuk w-full border rounded-xl p-3">
-                    <option value="">Pilih Barang</option>
-                  </select>
+                  <input list="masterBarangList" type="text" class="namaBarangMasuk w-full border rounded-xl p-3" placeholder="Cari atau pilih barang">
                 </div>
                 <div>
                   <input type="number" class="jumlahBarangMasuk w-full border rounded-xl p-3" placeholder="Jumlah Masuk">
@@ -307,9 +306,7 @@
       wrapper.className = 'grid md:grid-cols-2 gap-4 border rounded-2xl p-4 bg-slate-50 pemasukan-item';
       wrapper.innerHTML = `
         <div>
-          <select class="namaBarangMasuk w-full border rounded-xl p-3">
-            <option value="">Pilih Barang</option>
-          </select>
+          <input list="masterBarangList" type="text" class="namaBarangMasuk w-full border rounded-xl p-3" placeholder="Cari atau pilih barang">
         </div>
         <div>
           <input type="number" class="jumlahBarangMasuk w-full border rounded-xl p-3" placeholder="Jumlah Masuk">
@@ -321,17 +318,18 @@
     }
 
     function updateSelectBarang() {
-      const semuaSelect = document.querySelectorAll('.namaBarangMasuk');
+      let datalist = document.getElementById('masterBarangList');
 
-      semuaSelect.forEach(select => {
-        const selectedValue = select.value;
-        select.innerHTML = '<option value="">Pilih Barang</option>';
+      if (!datalist) {
+        datalist = document.createElement('datalist');
+        datalist.id = 'masterBarangList';
+        document.body.appendChild(datalist);
+      }
 
-        barangList.forEach(barang => {
-          select.innerHTML += `<option value="${barang.nama}">${barang.nama} (${barang.satuan})</option>`;
-        });
+      datalist.innerHTML = '';
 
-        select.value = selectedValue;
+      barangList.forEach(barang => {
+        datalist.innerHTML += `<option value="${barang.nama}">${barang.nama} (${barang.satuan})</option>`;
       });
     }
 
@@ -367,9 +365,7 @@
       document.getElementById('listPemasukanBarang').innerHTML = `
         <div class="grid md:grid-cols-2 gap-4 border rounded-2xl p-4 bg-slate-50 pemasukan-item">
           <div>
-            <select class="namaBarangMasuk w-full border rounded-xl p-3">
-                    <option value="">Pilih Barang</option>
-                  </select>
+            <input list="masterBarangList" type="text" class="namaBarangMasuk w-full border rounded-xl p-3" placeholder="Cari atau pilih barang">
           </div>
           <div>
             <input type="number" class="jumlahBarangMasuk w-full border rounded-xl p-3" placeholder="Jumlah Masuk">
