@@ -338,20 +338,26 @@
 
       let berhasil = false;
 
-      namaBarangInputs.forEach((input, index) => {
-        const namaBarang = input.value.trim();
+      for (let index = 0; index < namaBarangInputs.length; index++) {
+        const namaBarang = namaBarangInputs[index].value.trim();
         const jumlahMasuk = parseInt(jumlahBarangInputs[index].value);
 
-        if (!namaBarang || isNaN(jumlahMasuk) || jumlahMasuk <= 0) return;
+        if (!namaBarang || isNaN(jumlahMasuk) || jumlahMasuk <= 0) {
+          continue;
+        }
 
-        const barang = barangList.find(item => item.nama.toLowerCase() === namaBarang.toLowerCase());
+        const barang = barangList.find(item =>
+          item.nama.trim().toLowerCase() === namaBarang.trim().toLowerCase()
+        );
 
-        if (!barang) return;
+        if (!barang) {
+          continue;
+        }
 
-        barang.stokMasuk += jumlahMasuk;
-        barang.sisaStok += jumlahMasuk;
+        barang.stokMasuk = Number(barang.stokMasuk || 0) + jumlahMasuk;
+        barang.sisaStok = Number(barang.sisaStok || 0) + jumlahMasuk;
         berhasil = true;
-      });
+      }
 
       if (!berhasil) {
         alert('Tidak ada data pemasukan yang valid');
