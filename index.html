@@ -258,7 +258,9 @@
             <td class="p-3">${karyawan.departemen}</td>
           </tr>
         `;
-      });
+
+      container.appendChild(wrapper);
+    });
     }
 
     function exportKaryawan() {
@@ -300,7 +302,9 @@
     function tambahBarisPemasukan() {
       const container = document.getElementById('listPemasukanBarang');
 
-      container.innerHTML += `
+      const wrapper = document.createElement('div');
+      wrapper.className = 'grid md:grid-cols-2 gap-4 border rounded-2xl p-4 bg-slate-50 pemasukan-item';
+      wrapper.innerHTML = `
         <div class="grid md:grid-cols-2 gap-4 border rounded-2xl p-4 bg-slate-50 pemasukan-item">
           <div>
             <input list="masterBarangList" type="text" class="namaBarangMasuk w-full border rounded-xl p-3" placeholder="Cari Nama Barang">
