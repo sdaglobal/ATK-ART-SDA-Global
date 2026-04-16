@@ -609,12 +609,12 @@
 
       tampilkanHistoriKeluar();
 
-      document.getElementById('menu-stok-atk')?.addEventListener('click', () => tampilSection('stok-atk-section'));
-      document.getElementById('menu-database-barang')?.addEventListener('click', () => tampilSection('database-barang-section'));
-      document.getElementById('menu-master-barang')?.addEventListener('click', () => tampilSection('master-barang-section'));
-      document.getElementById('menu-master-karyawan')?.addEventListener('click', () => tampilSection('master-karyawan-section'));
-      document.getElementById('menu-histori-masuk')?.addEventListener('click', () => tampilSection('histori-masuk-section'));
-      document.getElementById('menu-histori-keluar')?.addEventListener('click', () => tampilSection('histori-keluar-section'));
+      document.getElementById('menu-stok-atk').onclick = function() { tampilSection('stok-atk-section'); };
+      document.getElementById('menu-database-barang').onclick = function() { tampilSection('database-barang-section'); };
+      document.getElementById('menu-master-barang').onclick = function() { tampilSection('master-barang-section'); };
+      document.getElementById('menu-master-karyawan').onclick = function() { tampilSection('master-karyawan-section'); };
+      document.getElementById('menu-histori-masuk').onclick = function() { tampilSection('histori-masuk-section'); };
+      document.getElementById('menu-histori-keluar').onclick = function() { tampilSection('histori-keluar-section'); };
       updateDashboardDepartemen();
       updateDashboardDepartemen();
       alert('Pengeluaran stok berhasil disimpan');
@@ -852,7 +852,7 @@
       }
     }
 
-    window.onload = function () {
+    document.addEventListener('DOMContentLoaded', function () {
       tampilkanBarang();
       tampilkanKaryawan();
       updateSelectBarang();
