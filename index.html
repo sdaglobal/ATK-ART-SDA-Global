@@ -1001,6 +1001,35 @@ function updateAtkTerbanyak() {
   }
 }
 
+function loadMasterBarangDariExcel() {
+  fetch('master-barang.xlsx')
+    .then(response => {
+      if (!response.ok) {
+        throw new Error('File master barang tidak ditemukan');
+      }
+
+      return response.arrayBuffer();
+    })
+    .then(data => {
+      const workbook = XLSX.read(data, { type: 'array' });
+      const sheetName = workbook.SheetNames[0];
+      const worksheet = workbook.Sheets[sheetName];
+      const importedData = XLSX.utils.sheet_to_json(worksheet);
+
+      barangList = importedData;
+      localStorage.setItem('masterBarang', JSON.stringify(barangList));
+
+      tampilkanBarang();
+      updateSelectBarang();
+      renderGrafikPengeluaran();
+      updateDepartemenTerbanyak();
+      updateAtkTerbanyak();
+    })
+    .catch(error => {
+      console.log('Master barang tidak otomatis dimuat:', error);
+    });
+}
+
 window.onload = function () {
   document.getElementById('stok-atk-section').classList.add('hidden');
   document.getElementById('database-barang-section').classList.add('hidden');
@@ -1012,6 +1041,7 @@ window.onload = function () {
   tampilkanKaryawan();
   updateSelectBarang();
   updateDatalistKaryawan();
+  loadMasterBarangDariExcel();
   tampilkanHistoriMasuk();
   tampilkanHistoriKeluar();
   renderGrafikPengeluaran();
