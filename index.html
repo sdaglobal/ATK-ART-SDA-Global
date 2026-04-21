@@ -904,19 +904,7 @@ function renderGrafikPengeluaran() {
     }
   }
 },
-  tooltip: {
-    callbacks: {
-      label: function(context) {
-        const total = context.dataset.data.reduce((a, b) => a + b, 0);
-        const value = context.raw;
-        const persen = total > 0 ? ((value / total) * 100).toFixed(1) : 0;
-
-        return `${value} item (${persen}%)`;
-      }
-    }
-  }
-},
-      scales: {
+scales: {
         y: {
           beginAtZero: true,
           ticks: {
