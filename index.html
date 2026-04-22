@@ -730,6 +730,7 @@ alert('Pengeluaran stok berhasil disimpan');
 
       reader.onload = async function(e) {
         try {
+          document.body.style.cursor = 'wait';
           const data = new Uint8Array(e.target.result);
           const workbook = XLSX.read(data, { type: 'array' });
           const sheetName = workbook.SheetNames[0];
@@ -787,14 +788,17 @@ updateAtkTerbanyak();
 
 await loadBarangDariSupabase();
 
-setTimeout(() => {
+setTimeout(async () => {
+  await loadBarangDariSupabase();
+  document.body.style.cursor = 'default';
   alert('Master barang berhasil diimport dari file XLSX');
-}, 500);
+}, 1000);
 
         } catch (error) {
-          alert('File XLSX gagal dibaca');
-          console.log(error);
-        }
+  document.body.style.cursor = 'default';
+  alert('File XLSX gagal dibaca');
+  console.log(error);
+}
       };
 
       reader.readAsArrayBuffer(file);
