@@ -999,7 +999,7 @@ setTimeout(async () => {
 
       [...historiKeluar]
         .sort((a, b) => new Date(b.tanggal) - new Date(a.tanggal))
-        .forEach(item => {
+        .forEach((item, index) => {
         const cocokKeyword =
           item.namaBarang.toLowerCase().includes(keyword) ||
           item.pengambil.toLowerCase().includes(keyword);
@@ -1015,21 +1015,57 @@ setTimeout(async () => {
             <td class="p-3">${item.jumlahKeluar}</td>
             <td class="p-3">${item.pengambil}</td>
             <td class="p-3">${item.departemen}</td>
+<td class="p-3">
+  <button onclick="hapusHistoriKeluar(${index})" class="bg-red-600 text-white px-3 py-1 rounded-lg hover:bg-red-700">
+    Hapus
+  </button>
+</td>
           </tr>
         `;
       });
     }
 
     function exportHistoriKeluar() {
-      const bulan = document.getElementById('filterHistoriKeluar').value;
-      const dataExport = historiKeluar.filter(item => !bulan || item.tanggal.startsWith(bulan));
+  const bulan = document.getElementById('filterHistoriKeluar').value;
+  const dataExport = historiKeluar.filter(item => !bulan || item.tanggal.startsWith(bulan));
 
-      const worksheet = XLSX.utils.json_to_sheet(dataExport);
-      const workbook = XLSX.utils.book_new();
-      XLSX.utils.book_append_sheet(workbook, worksheet, 'Histori Pengeluaran');
-      XLSX.writeFile(workbook, 'histori-pengeluaran.xlsx');
-    }
+  const worksheet = XLSX.utils.json_to_sheet(dataExport);
+  const workbook = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(workbook, worksheet, 'Histori Pengeluaran');
+  XLSX.writeFile(workbook, 'histori-pengeluaran.xlsx');
+}
 
+async function hapusHistoriKeluar(index) {
+  const histori = historiKeluar[index];
+
+  historiKeluar.splice(index, 1);
+  localStorage.setItem('historiKeluar', JSON.stringify(historiKeluar));
+
+  const barang = barangList.find(b => b.nama === histori.namaBarang);
+
+  if (barang) {
+    barang.stokKeluar = Math.max(
+      0,
+      Number(barang.stokKeluar || 0) - Number(histori.jumlahKeluar || 0)
+    );
+
+    barang.sisaStok =
+      Number(barang.stokAwal || 0) +
+      Number(barang.stokMasuk || 0) -
+      Number(barang.stokKeluar || 0);
+
+    await updateBarangKeSupabase(barang);
+  }
+
+  localStorage.setItem('masterBarang', JSON.stringify(barangList));
+
+  tampilkanBarang();
+  tampilkanHistoriKeluar();
+  renderGrafikPengeluaran();
+  updateDepartemenTerbanyak();
+  updateAtkTerbanyak();
+}
+      
 function tampilSection(sectionId) {
   const semuaSection = [
     'stok-atk-section',
