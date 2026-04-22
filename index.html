@@ -240,7 +240,20 @@ let historiKeluar = JSON.parse(localStorage.getItem('historiKeluar')) || [];
 const supabaseUrl = 'https://wlnibcoqspxwmylkyolk.supabase.co';
 const supabaseKey = 'sb_publishable_lycr_Pk_EfTZxPmUJ3xsag_isf7AEwS';
 const supabaseClient = window.supabase.createClient(supabaseUrl, supabaseKey);
-    async function simpanBarangKeSupabase(barang) {
+    async function simpanKaryawanKeSupabase(karyawan) {
+  const { error } = await supabaseClient
+    .from('master_karyawan')
+    .insert([{
+      nama: karyawan.nama,
+      departemen: karyawan.departemen
+    }]);
+
+  if (error) {
+    console.log('Gagal simpan karyawan:', error);
+  }
+}
+
+async function simpanBarangKeSupabase(barang) {
   const { error } = await supabaseClient
     .from('master_barang')
     .insert([{
@@ -319,7 +332,7 @@ resetFormBarang();
 alert('Master barang berhasil disimpan');
     }
 
-    function simpanKaryawan() {
+    async function simpanKaryawan() {
       const nama = document.getElementById('namaKaryawan').value;
       const departemen = document.getElementById('departemenKaryawan').value;
 
@@ -334,7 +347,9 @@ alert('Master barang berhasil disimpan');
       };
 
       karyawanList.push(dataKaryawan);
-      localStorage.setItem('masterKaryawan', JSON.stringify(karyawanList));
+localStorage.setItem('masterKaryawan', JSON.stringify(karyawanList));
+
+await simpanKaryawanKeSupabase(dataKaryawan);
 
       document.getElementById('namaKaryawan').value = '';
       document.getElementById('departemenKaryawan').value = '';
@@ -383,7 +398,7 @@ alert('Master barang berhasil disimpan');
 
       const reader = new FileReader();
 
-      reader.onload = function(e) {
+      reader.onload = async function(e) {
         try {
           const data = new Uint8Array(e.target.result);
           const workbook = XLSX.read(data, { type: 'array' });
@@ -392,10 +407,19 @@ alert('Master barang berhasil disimpan');
           const importedData = XLSX.utils.sheet_to_json(worksheet);
 
           karyawanList = importedData;
-          localStorage.setItem('masterKaryawan', JSON.stringify(karyawanList));
-          tampilkanKaryawan();
+localStorage.setItem('masterKaryawan', JSON.stringify(karyawanList));
 
-          alert('Master karyawan berhasil diimport');
+for (const karyawan of karyawanList) {
+  await simpanKaryawanKeSupabase({
+    nama: karyawan.nama,
+    departemen: karyawan.departemen
+  });
+}
+
+tampilkanKaryawan();
+updateDatalistKaryawan();
+
+alert('Master karyawan berhasil diimport');
         } catch (error) {
           alert('File XLSX gagal dibaca');
         }
