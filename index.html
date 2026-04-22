@@ -342,8 +342,9 @@ async function loadKaryawanDariSupabase() {
 
 async function loadBarangDariSupabase() {
   const { data, error } = await supabaseClient
-    .from('master_barang')
-    .select('*');
+  .from('master_barang')
+  .select('*')
+  .order('kode', { ascending: true });
 
   console.log('Data barang dari Supabase:', data);
   console.log('Error Supabase:', error);
@@ -671,7 +672,7 @@ await updateBarangKeSupabase(barang);
 
         const dataMasuk = {
   tanggal: document.getElementById('tanggalMasuk').value,
-  namaBarang,
+  namaBarang: barang.nama,
   jumlahMasuk
 };
 
@@ -810,7 +811,7 @@ await updateBarangKeSupabase(barang);
 
         const dataKeluar = {
   tanggal: document.getElementById('tanggalKeluar').value,
-  namaBarang,
+  namaBarang: barang.nama,
   jumlahKeluar,
   pengambil: document.getElementById('namaPengambilGlobal').value,
   departemen: document.getElementById('departemenGlobal').value
@@ -977,11 +978,8 @@ renderGrafikPengeluaran();
 updateDepartemenTerbanyak();
 updateAtkTerbanyak();
 
-await loadBarangDariSupabase();
-
 setTimeout(async () => {
-  await loadBarangDariSupabase();
-  document.body.style.cursor = 'default';
+    document.body.style.cursor = 'default';
   alert('Master barang berhasil diimport dari file XLSX');
 }, 1000);
 
