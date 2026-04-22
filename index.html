@@ -272,12 +272,35 @@ async function simpanBarangKeSupabase(barang) {
   }
 }
 
+async function loadKaryawanDariSupabase() {
+  const { data, error } = await supabaseClient
+    .from('master_karyawan')
+    .select('*');
+
+  console.log('Data karyawan dari Supabase:', data);
+  console.log('Error karyawan Supabase:', error);
+
+  if (!error && data) {
+    karyawanList = data.map(item => ({
+      nama: item.nama,
+      departemen: item.departemen
+    }));
+
+    localStorage.setItem('masterKaryawan', JSON.stringify(karyawanList));
+
+    tampilkanKaryawan();
+    updateDatalistKaryawan();
+    isiDepartemenOtomatis();
+  }
+}
+
 async function loadBarangDariSupabase() {
   const { data, error } = await supabaseClient
     .from('master_barang')
     .select('*');
+
   console.log('Data barang dari Supabase:', data);
-console.log('Error Supabase:', error);
+  console.log('Error Supabase:', error);
 
   if (!error && data) {
     barangList = data.map(item => ({
@@ -296,41 +319,40 @@ console.log('Error Supabase:', error);
     updateAtkTerbanyak();
   }
 }
+      async function simpanBarang() {
+  const kode = document.getElementById('kodeBarang').value;
+  const nama = document.getElementById('namaBarang').value;
+  const kategori = document.getElementById('kategoriBarang').value;
+  const satuan = document.getElementById('satuanBarang').value;
+  const stok = parseInt(document.getElementById('stokAwal').value);
 
-    async function simpanBarang() {
-      const kode = document.getElementById('kodeBarang').value;
-      const nama = document.getElementById('namaBarang').value;
-      const kategori = document.getElementById('kategoriBarang').value;
-      const satuan = document.getElementById('satuanBarang').value;
-      const stok = parseInt(document.getElementById('stokAwal').value);
+  if (!kode || !nama || !kategori || !satuan || !stok) {
+    alert('Semua data barang harus diisi');
+    return;
+  }
 
-      if (!kode || !nama || !kategori || !satuan || !stok) {
-        alert('Semua data barang harus diisi');
-        return;
-      }
+  const barangBaru = {
+    kode,
+    nama,
+    kategori,
+    satuan,
+    stokAwal: stok,
+    stokMasuk: 0,
+    stokKeluar: 0,
+    sisaStok: stok
+  };
 
-      const barangBaru = {
-        kode,
-        nama,
-        kategori,
-        satuan,
-        stokAwal: stok,
-        stokMasuk: 0,
-        stokKeluar: 0,
-        sisaStok: stok
-      };
+  barangList.push(barangBaru);
+  localStorage.setItem('masterBarang', JSON.stringify(barangList));
 
-      barangList.push(barangBaru);
-localStorage.setItem('masterBarang', JSON.stringify(barangList));
+  await simpanBarangKeSupabase(barangBaru);
+  await loadBarangDariSupabase();
 
-await simpanBarangKeSupabase(barangBaru);
-await loadBarangDariSupabase();
-
-tampilkanBarang();
-updateSelectBarang();
-resetFormBarang();
-alert('Master barang berhasil disimpan');
-    }
+  tampilkanBarang();
+  updateSelectBarang();
+  resetFormBarang();
+  alert('Master barang berhasil disimpan');
+}
 
     async function simpanKaryawan() {
       const nama = document.getElementById('namaKaryawan').value;
@@ -1171,7 +1193,7 @@ window.onload = function () {
   updateSelectBarang();
 updateDatalistKaryawan();
 loadBarangDariSupabase();
-loadMasterKaryawanDariExcel();
+loadKaryawanDariSupabase();
 
 setTimeout(() => {
   updateDatalistKaryawan();
