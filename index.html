@@ -249,7 +249,7 @@ const supabaseKey = 'sb_publishable_lycr_Pk_EfTZxPmUJ3xsag_isf7AEwS';
 const supabaseClient = window.supabase.createClient(supabaseUrl, supabaseKey);
     function ambilKodeBarang(namaInput) {
   const option = [...document.querySelectorAll('#masterBarangList option')]
-    .find(opt => opt.value.toLowerCase().includes(namaInput.toLowerCase()));
+    .find(opt => opt.value.toLowerCase() === namaInput.toLowerCase());
 
   return option ? option.dataset.kode : null;
 }
@@ -1497,7 +1497,7 @@ function updateDepartemenTerbanyak() {
     const namaFix = row.querySelector('.namaBarangKeluar');
     const jumlahFix = row.querySelector('.jumlahBarangKeluar');
     function hitung() {
-  const nama = namaFix.value.trim().toLowerCase();
+  const nama = namaFix.value.trim();
   const jumlah = parseInt(jumlahFix.value) || 0;
       if (!namaFix.value.trim()) {
   sisaInput.value = '-';
@@ -1544,9 +1544,12 @@ const barang = barangList.find(item =>
 
 namaFix.addEventListener('input', hitung);
 namaFix.addEventListener('change', hitung);
+namaFix.addEventListener('blur', hitung);
+namaFix.addEventListener('keyup', hitung);
 
 jumlahFix.addEventListener('input', hitung);
 jumlahFix.addEventListener('change', hitung);
+jumlahFix.addEventListener('keyup', hitung);
     hitung();
   });
 }
