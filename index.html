@@ -187,7 +187,7 @@ class="bg-indigo-600 text-white px-5 py-3 rounded-xl hover:bg-indigo-700">
             <div id="listPengeluaranBarang" class="space-y-4">
               <div class="grid md:grid-cols-[2fr_1fr_1fr_auto] gap-4 border rounded-2xl p-4 bg-slate-50 pengeluaran-item">
                 <input list="masterBarangList" type="text" class="namaBarangKeluar w-full min-w-[220px] border rounded-xl p-3" placeholder="Cari atau pilih barang">
-                <input type="number" class="jumlahBarangKeluar w-full border rounded-xl p-3" placeholder="Jumlah Keluar">
+                <input type="number" min="1" class="jumlahBarangKeluar w-full border rounded-xl p-3" placeholder="Jumlah Keluar">
                 <input type="text" class="sisaStokRealtime w-full border rounded-xl p-3 bg-slate-100" placeholder="Sisa Stok" readonly>
                 <input type="hidden" class="departemenKeluar">
                 <div class="flex gap-2">
@@ -750,7 +750,7 @@ simpanHistoriMasukKeSupabase(dataMasuk);
       wrapper.className = 'grid md:grid-cols-[2fr_1fr_1fr_auto] gap-4 border rounded-2xl p-4 bg-slate-50 pengeluaran-item';
       wrapper.innerHTML = `
         <input list="masterBarangList" type="text" class="namaBarangKeluar w-full min-w-[220px] border rounded-xl p-3" placeholder="Cari atau pilih barang">
-        <input type="number" class="jumlahBarangKeluar w-full border rounded-xl p-3" placeholder="Jumlah Keluar">
+        <input type="number" min="1" class="jumlahBarangKeluar w-full border rounded-xl p-3" placeholder="Jumlah Keluar">
         <input type="text" class="sisaStokRealtime w-full border rounded-xl p-3 bg-slate-100" placeholder="Sisa Stok" readonly>
         <input type="hidden" class="departemenKeluar">
                 <div class="flex gap-2">
@@ -787,10 +787,10 @@ setTimeout(updateSisaStokRealtime, 100);
     const jumlahKeluar = parseInt(jumlahBarangInputs[index].value);
 
     if (!namaBarang || isNaN(jumlahKeluar) || jumlahKeluar <= 0) {
-      jumlahBarangInputs[index].classList.add('border-red-500');
-      alert('Semua input pengeluaran harus diisi dengan benar');
-      return;
-    }
+  jumlahBarangInputs[index].classList.add('border-red-500');
+  alert("Jumlah tidak boleh 0 atau minus!");
+  return;
+}
 
     const kode = ambilKodeBarang(namaBarang);
 
@@ -872,7 +872,7 @@ simpanHistoriKeluarKeSupabase(dataKeluar);
       document.getElementById('listPengeluaranBarang').innerHTML = `
         <div class="grid md:grid-cols-[2fr_1fr_1fr_auto] gap-4 border rounded-2xl p-4 bg-slate-50 pengeluaran-item">
           <input list="masterBarangList" type="text" class="namaBarangKeluar w-full min-w-[220px] border rounded-xl p-3" placeholder="Cari atau pilih barang">
-          <input type="number" class="jumlahBarangKeluar w-full border rounded-xl p-3" placeholder="Jumlah Keluar">
+          <input type="number" min="1" class="jumlahBarangKeluar w-full border rounded-xl p-3" placeholder="Jumlah Keluar">
           <input type="text" class="sisaStokRealtime w-full border rounded-xl p-3 bg-slate-100" readonly>
           <input type="hidden" class="departemenKeluar">
                 <div class="flex gap-2">
@@ -1499,6 +1499,10 @@ function updateDepartemenTerbanyak() {
     function hitung() {
   const nama = namaFix.value.trim().toLowerCase();
   const jumlah = parseInt(jumlahFix.value) || 0;
+      if (jumlah <= 0) {
+  jumlahFix.value = 1;
+  return;
+}
 if (!nama) {
     sisaInput.value = '-';
     return;
