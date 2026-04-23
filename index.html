@@ -1503,8 +1503,13 @@ function updateDepartemenTerbanyak() {
   sisaInput.value = '-';
   return;
 }
-      if (jumlah <= 0) {
-  jumlahFix.value = 1;
+      if (!jumlahFix.value) {
+  sisaInput.value = '-';
+  return;
+}
+
+if (jumlah <= 0) {
+  sisaInput.value = '-';
   return;
 }
 if (!nama) {
