@@ -185,9 +185,10 @@ class="bg-indigo-600 text-white px-5 py-3 rounded-xl hover:bg-indigo-700">
             <datalist id="masterKaryawanList"></datalist>
 
             <div id="listPengeluaranBarang" class="space-y-4">
-              <div class="grid md:grid-cols-[2fr_1fr_auto] gap-4 border rounded-2xl p-4 bg-slate-50 pengeluaran-item">
+              <div class="grid md:grid-cols-[2fr_1fr_1fr_auto] gap-4 border rounded-2xl p-4 bg-slate-50 pengeluaran-item">
                 <input list="masterBarangList" type="text" class="namaBarangKeluar w-full min-w-[220px] border rounded-xl p-3" placeholder="Cari atau pilih barang">
                 <input type="number" class="jumlahBarangKeluar w-full border rounded-xl p-3" placeholder="Jumlah Keluar">
+                <input type="text" class="sisaStokRealtime w-full border rounded-xl p-3 bg-slate-100" placeholder="Sisa Stok" readonly>
                 <input type="hidden" class="departemenKeluar">
                 <div class="flex gap-2">
                   <input type="hidden" class="pengambilKeluar">
@@ -606,15 +607,9 @@ alert('Master karyawan berhasil diimport');
       `;
 
       container.appendChild(wrapper);
-
-      const namaPengambil = document.getElementById('namaPengambilGlobal').value;
-      const departemen = document.getElementById('departemenGlobal').value;
-
-      wrapper.querySelector('.pengambilKeluar').value = namaPengambil;
-      wrapper.querySelector('.departemenKeluar').value = departemen;
+      updateSisaStokRealtime();
     }
-
-    function updateSelectBarang() {
+      function updateSelectBarang() {
       let datalist = document.getElementById('masterBarangList');
 
       if (!datalist) {
@@ -749,10 +744,11 @@ simpanHistoriMasukKeSupabase(dataMasuk);
       const container = document.getElementById('listPengeluaranBarang');
 
       const wrapper = document.createElement('div');
-      wrapper.className = 'grid md:grid-cols-[2fr_1fr_auto] gap-4 border rounded-2xl p-4 bg-slate-50 pengeluaran-item';
+      wrapper.className = 'grid md:grid-cols-[2fr_1fr_1fr_auto] gap-4 border rounded-2xl p-4 bg-slate-50 pengeluaran-item';
       wrapper.innerHTML = `
         <input list="masterBarangList" type="text" class="namaBarangKeluar w-full min-w-[220px] border rounded-xl p-3" placeholder="Cari atau pilih barang">
         <input type="number" class="jumlahBarangKeluar w-full border rounded-xl p-3" placeholder="Jumlah Keluar">
+        <input type="text" class="sisaStokRealtime w-full border rounded-xl p-3 bg-slate-100" placeholder="Sisa Stok" readonly>
         <input type="hidden" class="departemenKeluar">
                 <div class="flex gap-2">
                   <input type="hidden" class="pengambilKeluar">
@@ -763,6 +759,7 @@ simpanHistoriMasukKeSupabase(dataMasuk);
       `;
 
       container.appendChild(wrapper);
+      updateSisaStokRealtime();
     }
 
     function hapusBarisPengeluaran(button) {
@@ -839,9 +836,10 @@ simpanHistoriKeluarKeSupabase(dataKeluar);
       tampilkanBarang();
 
       document.getElementById('listPengeluaranBarang').innerHTML = `
-        <div class="grid md:grid-cols-[2fr_1fr_auto] gap-4 border rounded-2xl p-4 bg-slate-50 pengeluaran-item">
+        <div class="grid md:grid-cols-[2fr_1fr_1fr_auto] gap-4 border rounded-2xl p-4 bg-slate-50 pengeluaran-item">
           <input list="masterBarangList" type="text" class="namaBarangKeluar w-full min-w-[220px] border rounded-xl p-3" placeholder="Cari atau pilih barang">
           <input type="number" class="jumlahBarangKeluar w-full border rounded-xl p-3" placeholder="Jumlah Keluar">
+          <input type="text" class="sisaStokRealtime w-full border rounded-xl p-3 bg-slate-100" readonly>
           <input type="hidden" class="departemenKeluar">
                 <div class="flex gap-2">
                   <input type="hidden" class="pengambilKeluar">
@@ -1438,6 +1436,34 @@ function updateDepartemenTerbanyak() {
     `;
   }
 }
+    function updateSisaStokRealtime() {
+  document.querySelectorAll('.pengeluaran-item').forEach(row => {
+    const namaInput = row.querySelector('.namaBarangKeluar');
+    const jumlahInput = row.querySelector('.jumlahBarangKeluar');
+    const sisaInput = row.querySelector('.sisaStokRealtime');
+
+    function hitung() {
+      const nama = namaInput.value.toLowerCase().trim();
+      const jumlah = parseInt(jumlahInput.value) || 0;
+
+      const barang = barangList.find(item =>
+        item.nama.toLowerCase().includes(nama)
+      );
+
+      if (!barang) {
+        sisaInput.value = '-';
+        return;
+      }
+
+      const sisa = Number(barang.sisaStok || 0) - jumlah;
+
+      sisaInput.value = sisa >= 0 ? sisa : 'Stok kurang!';
+    }
+
+    namaInput.addEventListener('input', hitung);
+    jumlahInput.addEventListener('input', hitung);
+  });
+}
   function updateAtkTerbanyak() {
   const atkCount = {};
 
@@ -1559,6 +1585,7 @@ tampilkanHistoriKeluar();
 renderGrafikPengeluaran();
 updateDepartemenTerbanyak();
 updateAtkTerbanyak();
+updateSisaStokRealtime();
 }
   </script>
   <section class="max-w-7xl mx-auto px-6 pb-10">
