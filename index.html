@@ -1499,6 +1499,10 @@ function updateDepartemenTerbanyak() {
     function hitung() {
   const nama = namaFix.value.trim().toLowerCase();
   const jumlah = parseInt(jumlahFix.value) || 0;
+      if (!namaFix.value.trim()) {
+  sisaInput.value = '-';
+  return;
+}
       if (jumlah <= 0) {
   jumlahFix.value = 1;
   return;
@@ -1508,6 +1512,10 @@ if (!nama) {
     return;
   }
       const kode = ambilKodeBarang(nama);
+      if (!kode) {
+  sisaInput.value = '-';
+  return;
+}
 
 const barang = barangList.find(item =>
   item.kode === kode
