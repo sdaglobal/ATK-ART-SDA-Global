@@ -779,6 +779,29 @@ simpanHistoriMasukKeSupabase(dataMasuk);
       const jumlahBarangInputs = document.querySelectorAll('.jumlahBarangKeluar');
 
       let berhasil = false;
+      for (let index = 0; index < namaBarangInputs.length; index++) {
+    const namaBarang = namaBarangInputs[index].value.trim();
+    const jumlahKeluar = parseInt(jumlahBarangInputs[index].value);
+
+    if (!namaBarang || isNaN(jumlahKeluar) || jumlahKeluar <= 0) {
+      alert('Semua input pengeluaran harus diisi dengan benar');
+      return;
+    }
+
+    const barang = barangList.find(item =>
+      item.nama.toLowerCase().includes(namaBarang.toLowerCase())
+    );
+
+    if (!barang) {
+      alert(`Barang "${namaBarang}" tidak ditemukan`);
+      return;
+    }
+
+    if (Number(barang.sisaStok || 0) < jumlahKeluar) {
+      alert(`❌ Stok tidak cukup!\nBarang: ${barang.nama}\nSisa: ${barang.sisaStok}\nDiminta: ${jumlahKeluar}`);
+      return; // 🔥 HENTIKAN SEMUA
+    }
+  }
 
       for (let index = 0; index < namaBarangInputs.length; index++) {
         const namaBarang = namaBarangInputs[index].value.trim();
