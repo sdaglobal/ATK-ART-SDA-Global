@@ -724,7 +724,7 @@ await updateBarangKeSupabase(barang);
 };
 
 historiMasuk.push(dataMasuk);
-simpanHistoriMasukKeSupabase(dataMasuk);
+await simpanHistoriMasukKeSupabase(dataMasuk);
 
         localStorage.setItem('historiMasuk', JSON.stringify(historiMasuk));
         berhasil = true;
@@ -901,7 +901,7 @@ await updateBarangKeSupabase(barang);
 };
 
 historiKeluar.push(dataKeluar);
-simpanHistoriKeluarKeSupabase(dataKeluar);
+await simpanHistoriKeluarKeSupabase(dataKeluar);
 
         localStorage.setItem('historiKeluar', JSON.stringify(historiKeluar));
         berhasil = true;
@@ -1132,6 +1132,7 @@ async function hapusHistoriMasuk(index) {
     localStorage.setItem('historiMasuk', JSON.stringify(historiMasuk));
 
     await loadHistoriMasukDariSupabase();
+    await new Promise(resolve => setTimeout(resolve, 300));
     await loadBarangDariSupabase();
 
     alert("Data berhasil dihapus");
@@ -1226,6 +1227,7 @@ async function hapusHistoriKeluar(index) {
     localStorage.setItem('historiKeluar', JSON.stringify(historiKeluar));
 
     await loadHistoriKeluarDariSupabase();
+    await new Promise(resolve => setTimeout(resolve, 300));
     await loadBarangDariSupabase();
 
     alert("Data berhasil dihapus");
