@@ -127,16 +127,16 @@ class="bg-indigo-600 text-white px-5 py-3 rounded-xl hover:bg-indigo-700">
       </div>
 
       <div class="overflow-x-auto mt-8">
-        <table class="w-full border border-slate-200 rounded-xl overflow-">
-          <thead class="bg-slate-200 text-slate-800">
-            <tr>
-              <th class="p-3 text-left">No</th>
-              <th class="p-3 text-left">Nama Karyawan</th>
-              <th class="p-3 text-left">Departemen</th>
-            </tr>
-          </thead>
-          <tbody id="tabelKaryawan"></tbody>
-        </table>
+        <table class="w-full border border-slate-200 rounded-xl overflow-hidden">
+  <thead class="bg-slate-200 text-slate-800">
+    <tr>
+      <th class="p-3 text-left">No</th>
+      <th class="p-3 text-left">Nama</th>
+      <th class="p-3 text-left">Departemen</th>
+    </tr>
+  </thead>
+  <tbody id="tabelKaryawan"></tbody>
+</table>
       </div>
     </div>
 
@@ -218,7 +218,7 @@ class="bg-indigo-600 text-white px-5 py-3 rounded-xl hover:bg-indigo-700">
         <input type="text" id="searchBarang" placeholder="Cari kode, nama barang, kategori, atau satuan" class="border rounded-xl px-4 py-3 w-full md:w-96" onkeyup="tampilkanBarang()">
       </div>
       <div class="overflow-x-auto">
-        <table class="w-full border border-slate-200 rounded-xl overflow-">
+        <table class="w-full border border-slate-200 rounded-xl overflow-hidden">
           <thead class="bg-slate-200 text-slate-800">
             <tr>
               <th class="p-3 text-left">No</th>
@@ -1083,22 +1083,61 @@ setTimeout(async () => {
 
       [...historiMasuk]
         .sort((a, b) => new Date(b.tanggal) - new Date(a.tanggal))
-        .forEach(item => {
+        .forEach((item, index) => {
         const cocokKeyword = item.namaBarang.toLowerCase().includes(keyword);
         const cocokBulan = !bulan || item.tanggal.startsWith(bulan);
 
         if (!cocokKeyword || !cocokBulan) return;
 
         tbody.innerHTML += `
-          <tr class="border-b hover:bg-slate-50 text-slate-800">
-            <td class="p-3">${item.tanggal}</td>
-            <td class="p-3">${item.namaBarang}</td>
-            <td class="p-3">${item.jumlahMasuk}</td>
-          </tr>
-        `;
+  <tr class="border-b hover:bg-slate-50 text-slate-800">
+    <td class="p-3">${item.tanggal}</td>
+    <td class="p-3">${item.namaBarang}</td>
+    <td class="p-3">${item.jumlahMasuk}</td>
+    <td class="p-3">
+      <button onclick="hapusHistoriMasuk(${index})"
+        class="bg-red-600 text-white px-3 py-1 rounded hover:bg-red-700">
+        Hapus
+      </button>
+    </td>
+  </tr>
+`;
       });
     }
+async function hapusHistoriMasuk(index) {
+  if (!confirm("Yakin ingin menghapus data ini?")) return;
 
+  const data = historiMasuk[index];
+
+  try {
+    await supabaseClient
+      .from('histori_masuk')
+      .delete()
+      .match({
+        tanggal: data.tanggal,
+        nama_barang: data.namaBarang,
+        jumlah_masuk: data.jumlahMasuk
+      });
+
+    historiMasuk.splice(index, 1);
+    localStorage.setItem('historiMasuk', JSON.stringify(historiMasuk));
+
+    await loadHistoriMasukDariSupabase();
+    await loadBarangDariSupabase();
+
+    alert("Data berhasil dihapus");
+
+    tampilkanHistoriMasuk();
+    tampilkanBarang();
+    renderGrafikPengeluaran();
+    updateDepartemenTerbanyak();
+    updateAtkTerbanyak();
+
+  } catch (err) {
+    alert("Gagal hapus data");
+    console.log(err);
+  }
+}
     function exportHistoriMasuk() {
       const bulan = document.getElementById('filterHistoriMasuk').value;
       const dataExport = historiMasuk.filter(item => !bulan || item.tanggal.startsWith(bulan));
@@ -1754,6 +1793,7 @@ updateAtkTerbanyak();
               <th class="p-3 text-left">Tanggal</th>
               <th class="p-3 text-left">Nama Barang</th>
               <th class="p-3 text-left">Jumlah Masuk</th>
+              <th class="p-3 text-left">Hapus</th>
             </tr>
           </thead>
           <tbody id="tabelHistoriMasuk" class="text-slate-800"></tbody>
