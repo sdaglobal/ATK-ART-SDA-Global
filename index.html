@@ -249,7 +249,7 @@ const supabaseKey = 'sb_publishable_lycr_Pk_EfTZxPmUJ3xsag_isf7AEwS';
 const supabaseClient = window.supabase.createClient(supabaseUrl, supabaseKey);
     function ambilKodeBarang(namaInput) {
   const barang = barangList.find(item =>
-    item.nama.toLowerCase().includes(namaInput.toLowerCase())
+    item.nama.trim().toLowerCase() === namaInput.trim().toLowerCase()
   );
 
   return barang ? barang.kode : null;
@@ -527,6 +527,8 @@ XLSX.writeFile(workbook, `laporan-departemen-${tanggal}.xlsx`);
 
   await simpanBarangKeSupabase(barangBaru);
   await loadBarangDariSupabase();
+
+  updateSisaStokRealtime();
 
   tampilkanBarang();
   updateSelectBarang();
@@ -916,7 +918,7 @@ await simpanHistoriKeluarKeSupabase(dataKeluar);
       tampilkanBarang();
 
       document.getElementById('listPengeluaranBarang').innerHTML = `
-        <div class="grid md:grid-cols-[2fr_1fr_1fr_auto] gap-4 border rounded-2xl p-4 bg-slate-50 pengeluaran-item">
+          <div class="grid md:grid-cols-[2fr_1fr_1fr_auto] gap-4 border rounded-2xl p-4 bg-slate-50 pengeluaran-item">
           <input list="masterBarangList" type="text" class="namaBarangKeluar w-full min-w-[220px] border rounded-xl p-3" placeholder="Cari atau pilih barang">
           <input type="number" min="1" class="jumlahBarangKeluar w-full border rounded-xl p-3" placeholder="Jumlah Keluar">
           <input type="text" class="sisaStokRealtime w-full border rounded-xl p-3 bg-slate-100" readonly>
@@ -929,7 +931,7 @@ await simpanHistoriKeluarKeSupabase(dataKeluar);
           </div>
         </div>
       `;
-
+requestAnimationFrame(updateSisaStokRealtime);
      document.getElementById('tanggalKeluar').value = '';
      document.getElementById('namaPengambilGlobal').value = '';
      document.getElementById('departemenGlobal').value = '';
@@ -937,6 +939,8 @@ await simpanHistoriKeluarKeSupabase(dataKeluar);
 tampilkanHistoriKeluar();
 await loadHistoriKeluarDariSupabase();
 await loadBarangDariSupabase();
+
+updateSisaStokRealtime();
 
 renderGrafikPengeluaran();
 updateDepartemenTerbanyak();
@@ -1659,6 +1663,9 @@ jumlahFix.onchange = hitung;
 jumlahFix.onkeyup = hitung;
     hitung();
   });
+      document.querySelectorAll('.namaBarangKeluar').forEach(input => {
+  input.dispatchEvent(new Event('input'));
+});
 }
   function updateAtkTerbanyak() {
   const atkCount = {};
@@ -1767,14 +1774,22 @@ loadKaryawanDariSupabase();
 Promise.all([
   loadHistoriMasukDariSupabase(),
   loadHistoriKeluarDariSupabase()
-]).then(() => {
-  loadBarangDariSupabase();
-  updateSisaStokRealtime();
+]).then(async () => {
+  await loadBarangDariSupabase();
+
+    requestAnimationFrame(() => {
+    updateSisaStokRealtime();
+  });
 });
 
 setTimeout(() => {
   updateDatalistKaryawan();
   updateSelectBarang();
+
+  requestAnimationFrame(() => {
+    updateSisaStokRealtime();
+  });
+
 }, 1000);
 
 tampilkanHistoriMasuk();
