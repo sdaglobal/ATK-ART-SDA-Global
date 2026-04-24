@@ -753,6 +753,11 @@ simpanHistoriMasukKeSupabase(dataMasuk);
       document.getElementById('tanggalMasuk').value = '';
 
       tampilkanHistoriMasuk();
+      await loadHistoriMasukDariSupabase();
+      await loadBarangDariSupabase();
+      renderGrafikPengeluaran();
+      updateDepartemenTerbanyak();
+      updateAtkTerbanyak();
       alert('Pemasukan stok berhasil disimpan');
     }
 
@@ -930,9 +935,13 @@ simpanHistoriKeluarKeSupabase(dataKeluar);
      document.getElementById('departemenGlobal').value = '';
 
 tampilkanHistoriKeluar();
+await loadHistoriKeluarDariSupabase();
+await loadBarangDariSupabase();
+
 renderGrafikPengeluaran();
 updateDepartemenTerbanyak();
 updateAtkTerbanyak();
+
 alert('Pengeluaran stok berhasil disimpan');
 }
 
