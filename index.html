@@ -1537,19 +1537,19 @@ const jumlahFix = row.querySelector('.jumlahBarangKeluar');
   const nama = namaFix.value.trim();
   const jumlah = parseInt(jumlahFix.value) || 0;
       if (!namaFix.value.trim()) {
-  sisaInput.value = '-';
+  sisaInput.value = '';
   return;
 }
       if (!jumlahFix.value) {
     const kode = ambilKodeBarang(nama);
 if (!kode) {
-  sisaInput.value = '-';
+  sisaInput.value = '';
   return;
 }
 
 const barang = barangList.find(item => item.kode === kode);
 if (!barang) {
-  sisaInput.value = '-';
+  sisaInput.value = '';
   return;
 }
 
@@ -1562,20 +1562,20 @@ if (!barang) {
 }
 
 if (jumlah <= 0) {
-  sisaInput.value = '-';
+  sisaInput.value = '';
   return;
 }
 if (!nama) {
-    sisaInput.value = '-';
+    sisaInput.value = '';
     return;
   }
       if (!barangList || barangList.length === 0) {
-  sisaInput.value = '-';
+  sisaInput.value = '';
   return;
 }
       const kode = ambilKodeBarang(nama);
       if (!kode) {
-  sisaInput.value = '-';
+  sisaInput.value = '';
   return;
 }
 
@@ -1584,7 +1584,7 @@ const barang = barangList.find(item =>
 );
 
       if (!barang) {
-        sisaInput.value = '-';
+        sisaInput.value = '';
         return;
       }
 
