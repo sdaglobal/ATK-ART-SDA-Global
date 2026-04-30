@@ -1760,46 +1760,41 @@ setTimeout(() => {
     });
 }
 
-window.onload = function () {
+window.onload = async function () {
   document.getElementById('stok-atk-section').classList.add('hidden');
   document.getElementById('database-barang-section').classList.add('hidden');
   document.getElementById('master-barang-section').classList.add('hidden');
   document.getElementById('master-karyawan-section').classList.add('hidden');
   document.getElementById('histori-masuk-section').classList.add('hidden');
   document.getElementById('histori-keluar-section').classList.add('hidden');
-  tampilkanBarang();
-  tampilkanKaryawan();
-  updateSelectBarang();
-updateDatalistKaryawan();
-loadKaryawanDariSupabase();
 
-Promise.all([
-  loadHistoriMasukDariSupabase(),
-  loadHistoriKeluarDariSupabase()
-]).then(async () => {
-  await loadBarangDariSupabase();
+  try {
+    await loadHistoriMasukDariSupabase();
+    await loadHistoriKeluarDariSupabase();
+    await loadBarangDariSupabase();
+    await loadKaryawanDariSupabase();
+
+    tampilkanBarang();
+    tampilkanKaryawan();
+    updateSelectBarang();
+    updateDatalistKaryawan();
+
+    tampilkanHistoriMasuk();
+    tampilkanHistoriKeluar();
+
+    renderGrafikPengeluaran();
+    updateDepartemenTerbanyak();
+    updateAtkTerbanyak();
 
     requestAnimationFrame(() => {
-    updateSisaStokRealtime();
-  });
-});
+      updateSisaStokRealtime();
+    });
 
-setTimeout(() => {
-  updateDatalistKaryawan();
-  updateSelectBarang();
+  } catch (err) {
+    console.log('ERROR LOAD:', err);
+  }
+};
 
-  requestAnimationFrame(() => {
-    updateSisaStokRealtime();
-  });
-
-}, 1000);
-
-tampilkanHistoriMasuk();
-tampilkanHistoriKeluar();
-renderGrafikPengeluaran();
-updateDepartemenTerbanyak();
-updateAtkTerbanyak();
-}
   </script>
   <section class="max-w-7xl mx-auto px-6 pb-10">
     <div id="histori-masuk-section" class="bg-white rounded-3xl shadow-lg p-8 mt-10 scroll-mt-28 hidden">
