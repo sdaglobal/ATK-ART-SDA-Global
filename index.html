@@ -1127,17 +1127,19 @@ setTimeout(async () => {
         if (!cocokKeyword || !cocokBulan) return;
 
         tbody.innerHTML += `
-  <tr class="border-b hover:bg-slate-50 text-slate-800">
-    <td class="p-3">${item.tanggal}</td>
-    <td class="p-3">${item.namaBarang}</td>
-    <td class="p-3">${item.jumlahMasuk}</td>
-    <td class="p-3">
-      <button onclick="hapusHistoriMasuk(${index})"
-        class="bg-red-600 text-white px-3 py-1 rounded hover:bg-red-700">
-        Hapus
-      </button>
-    </td>
-  </tr>
+<tr class="border-b hover:bg-slate-50 text-slate-800">
+  <td class="p-3">${item.tanggal}</td>
+  <td class="p-3">${item.namaBarang}</td>
+  <td class="p-3">${item.supplier || '-'}</td>
+  <td class="p-3">${item.nomorBTB || '-'}</td>
+  <td class="p-3">${item.jumlahMasuk}</td>
+  <td class="p-3">
+    <button onclick="hapusHistoriMasuk(${index})"
+      class="bg-red-600 text-white px-3 py-1 rounded hover:bg-red-700">
+      Hapus
+    </button>
+  </td>
+</tr>
 `;
       });
     }
@@ -1841,9 +1843,11 @@ updateAtkTerbanyak();
           <thead class="bg-slate-200 text-slate-800">
             <tr>
               <th class="p-3 text-left">Tanggal</th>
-              <th class="p-3 text-left">Nama Barang</th>
-              <th class="p-3 text-left">Jumlah Masuk</th>
-              <th class="p-3 text-left">Hapus</th>
+<th class="p-3 text-left">Nama Barang</th>
+<th class="p-3 text-left">Supplier</th>
+<th class="p-3 text-left">Nomor BTB</th>
+<th class="p-3 text-left">Jumlah Masuk</th>
+<th class="p-3 text-left">Hapus</th>
             </tr>
           </thead>
           <tbody id="tabelHistoriMasuk" class="text-slate-800"></tbody>
